@@ -36,3 +36,6 @@ node-compile-cache/
 # Vercel y caché de herramientas
 .vercel
 .impeccable/hook.cache.json
+
+.vercel
+.env*
