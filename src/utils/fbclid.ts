@@ -78,9 +78,10 @@ export function getStoredFbParams(): FbParams {
     const raw = sessionStorage.getItem(STORAGE_KEY)
     if (raw) data = JSON.parse(raw) as FbParams
   } catch { /* ignorar */ }
+  // La cookie del Pixel manda: así CAPI y GHL llevan exactamente el mismo fbc/fbp que el navegador
   return {
     ...data,
-    fbp: data.fbp || getCookie('_fbp'),
-    fbc: data.fbc || getCookie('_fbc'),
+    fbp: getCookie('_fbp') || data.fbp,
+    fbc: getCookie('_fbc') || data.fbc,
   }
 }
