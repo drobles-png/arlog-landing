@@ -63,12 +63,20 @@ const submitting = ref(false)
 const firstInput = ref<HTMLInputElement | null>(null)
 const formEl = ref<HTMLFormElement | null>(null)
 
+let opener: HTMLElement | null = null
+
 // Prellenar si ya se registró antes en este dispositivo
 watch(
   () => props.open,
   async (open) => {
     document.body.style.overflow = open ? 'hidden' : ''
-    if (!open) return
+    if (!open) {
+      // Devolver el foco al botón que abrió el formulario
+      opener?.focus({ preventScroll: true })
+      opener = null
+      return
+    }
+    opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const c = contactStore.contact
     if (c.email && !form.value.email) {
       form.value.nombre = c.nombre
@@ -91,8 +99,15 @@ const parsedPhone = computed(() =>
 const validators: Record<string, () => string | null> = {
   nombre: () => (form.value.nombre.trim().length < 2 ? 'Escribe tu nombre' : null),
   apellido: () => (form.value.apellido.trim().length < 2 ? 'Escribe tu apellido' : null),
-  email: () => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email.trim()) ? null : 'Revisa tu correo'),
-  phone: () => (parsedPhone.value?.isValid() ? null : 'Número inválido para el país elegido'),
+  email: () => {
+    const v = form.value.email.trim()
+    if (!v) return 'Escribe tu correo'
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : 'Ese correo no parece completo (ej. nombre@gmail.com)'
+  },
+  phone: () => {
+    if (!form.value.phone.replace(/\D/g, '')) return 'Escribe tu número de WhatsApp'
+    return parsedPhone.value?.isValid() ? null : 'Ese número no corresponde al país elegido'
+  },
   situacion: () => (form.value.situacion ? null : 'Elige una opción'),
 }
 
@@ -207,8 +222,30 @@ const handleSubmit = async () => {
   router.push('/pago')
 }
 
+const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled])'
+
 const onKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Escape' && props.open) emit('close')
+  if (!props.open) return
+  if (e.key === 'Escape') {
+    emit('close')
+    return
+  }
+  // Mantener el Tab dentro del formulario (si no, se escapa al video de atrás)
+  if (e.key !== 'Tab' || !formEl.value) return
+  const items = [...formEl.value.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+    (el) => el.offsetParent !== null && !(el instanceof HTMLInputElement && el.type === 'radio' && !el.checked && form.value.situacion),
+  )
+  if (!items.length) return
+  const first = items[0]
+  const last = items[items.length - 1]
+  const inside = formEl.value.contains(document.activeElement)
+  if (e.shiftKey && (document.activeElement === first || !inside)) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && (document.activeElement === last || !inside)) {
+    e.preventDefault()
+    first.focus()
+  }
 }
 onMounted(() => document.addEventListener('keydown', onKeydown))
 onUnmounted(() => {
@@ -230,7 +267,7 @@ onUnmounted(() => {
         @submit.prevent="handleSubmit"
       >
         <button type="button" class="rmodal__close" aria-label="Cerrar" @click="emit('close')">
-          <i class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
 
         <span class="rmodal__grab" aria-hidden="true"></span>
@@ -314,29 +351,31 @@ onUnmounted(() => {
             <input
               v-model="form.situacion"
               type="radio"
+              name="situacion"
               value="ya_vendo"
               data-field="situacion"
               @change="check('situacion')"
             />
-            <i class="fa-solid fa-store"></i>
+            <i class="fa-solid fa-store" aria-hidden="true"></i>
             Ya vendo computadoras, impresoras o accesorios
           </label>
           <label :class="{ 'is-on': form.situacion === 'quiero_empezar' }">
             <input
               v-model="form.situacion"
               type="radio"
+              name="situacion"
               value="quiero_empezar"
               @change="check('situacion')"
             />
-            <i class="fa-solid fa-seedling"></i>
+            <i class="fa-solid fa-seedling" aria-hidden="true"></i>
             Quiero empezar a venderlos
           </label>
           <small v-if="errors.situacion" id="err-situacion" role="alert">{{ errors.situacion }}</small>
         </fieldset>
 
         <button type="submit" class="btn btn--primary btn--block" :disabled="submitting">
-          <template v-if="submitting"><i class="fa-solid fa-circle-notch fa-spin"></i> Guardando</template>
-          <template v-else>Continuar al pago de ${{ MASTERCLASS_PRICE }} <i class="fa-solid fa-arrow-right"></i></template>
+          <template v-if="submitting"><i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> Guardando</template>
+          <template v-else>Continuar al pago de ${{ MASTERCLASS_PRICE }} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></template>
         </button>
         <p class="rmodal__legal">
           Al continuar aceptas la
@@ -518,6 +557,11 @@ onUnmounted(() => {
       border-color: $AR-BLUE-LIGHT;
     }
 
+    &::placeholder {
+      color: $AR-TEXT-DIM; // ~4.9:1 sobre navy-900 (el gris del navegador daba 4.2:1)
+      opacity: 1;
+    }
+
     &[aria-invalid='true'] {
       border-color: $AR-ERROR;
     }
@@ -539,6 +583,7 @@ onUnmounted(() => {
   }
 
   &--choice label {
+    position: relative; // ancla el radio oculto: al enfocarlo con teclado la página no salta
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -557,6 +602,8 @@ onUnmounted(() => {
 
     input {
       position: absolute;
+      inset: 0;
+      margin: 0;
       opacity: 0;
       pointer-events: none;
     }
