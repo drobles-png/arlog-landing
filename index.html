@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>Masterclass de importación en vivo | Arlog</title>
+    <meta name="description" content="Aprende a importar computadoras, impresoras y accesorios por tu cuenta: proveedor, traslado y aduana, y el costo real de cada unidad puesta en tu bodega. En vivo, $10.">
+    <meta name="author" content="Arlog">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#040a26">
+    <meta name="geo.region" content="EC-G">
+    <meta name="geo.placename" content="Guayaquil, Ecuador">
+    <link rel="icon" type="image/png" href="/image.png">
+    <link rel="apple-touch-icon" href="/image.png">
+
+    <!-- ═══════════════════════════════════════════════
+         META PIXEL — Arlog
+         El token de la API de Conversiones vive solo en env vars (META_CAPI_TOKEN), nunca aquí.
+         ═══════════════════════════════════════════════ -->
+    <script>
+    // En localhost no se carga el Pixel: así las pruebas no ensucian los datos de Arlog
+    if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2202471354478065');
+    fbq('track', 'PageView');
+    }
+    </script>
+
+    <!-- Fuentes: Lato (wordmark de Arlog), Source Sans 3, IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@700;900&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@500&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Wistia: precarga del VSL -->
+    <link rel="preconnect" href="https://fast.wistia.com">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Arlog">
+    <meta property="og:locale" content="es_EC">
+    <meta property="og:title" content="Masterclass de importación en vivo | Arlog">
+    <meta property="og:description" content="Proveedor, traslado y aduana, y el costo real de cada unidad puesta en tu bodega. En vivo, $10.">
+    <meta property="og:image" content="/image.png">
+    <meta name="twitter:card" content="summary_large_image">
+  </head>
+  <body>
+    <noscript><img height="1" width="1" style="display:none" alt=""
+      src="https://www.facebook.com/tr?id=2202471354478065&ev=PageView&noscript=1"></noscript>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

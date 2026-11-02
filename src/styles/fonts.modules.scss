@@ -1,0 +1,36 @@
+// Tipografía de Arlog
+// Lato 900: misma familia del wordmark "ARLOGS" — titulares
+// Source Sans 3: cuerpo, muy legible en móvil
+// IBM Plex Mono: cifras y costos (el cálculo del costo real es el centro de la clase)
+// Las fuentes se cargan con <link> en index.html, aquí solo van variables y mixins.
+
+$font-heading: 'Lato', system-ui, sans-serif;
+$font-body: 'Source Sans 3', system-ui, sans-serif;
+$font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+@mixin heading($weight: 900) {
+  font-family: $font-heading;
+  font-weight: $weight;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+@mixin eyebrow {
+  font-family: $font-heading;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+@mixin from($bp) {
+  @if $bp == 'md' {
+    @media (min-width: 768px) {
+      @content;
+    }
+  } @else if $bp == 'lg' {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  }
+}

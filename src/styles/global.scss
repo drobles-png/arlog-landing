@@ -1,0 +1,115 @@
+@use './colorVariables.module.scss' as *;
+@use './fonts.modules.scss' as *;
+
+html,
+body {
+  background-color: $AR-NAVY-900;
+  color: $AR-TEXT;
+  margin: 0;
+  font-family: $font-body;
+  font-size: 17px;
+  line-height: 1.6;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: $AR-BLUE-LIGHT;
+}
+
+:focus-visible {
+  outline: 2px solid $AR-ORANGE-SOFT;
+  outline-offset: 3px;
+}
+
+// ── Botón principal (naranja del panel terrestre) ───────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 56px;
+  padding: 0.9rem 1.75rem;
+  border: 0;
+  border-radius: 10px;
+  font-family: $font-heading;
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &--primary {
+    background: $AR-ORANGE-ACTION;
+    color: $white;
+    box-shadow: 0 10px 30px -10px rgba($AR-ORANGE, 0.6);
+
+    @media (hover: hover) {
+      &:hover {
+        background: $AR-ORANGE-HOVER;
+      }
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $AR-TEXT;
+    border: 1px solid $AR-NAVY-600;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: $AR-BLUE-LIGHT;
+      }
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @include from('md') {
+    padding: 0 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
